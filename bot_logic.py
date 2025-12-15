@@ -31,3 +31,23 @@ async def choose(ctx, *choices: str):
         await ctx.send("Você precisa passar pelo menos uma opção. Ex: op1 op2 op3. Ex: (aspas)op1 espaço1(aspas) (a)op2 espaço2(a)  (a)op3 espaço3(a)")
         return
     await ctx.send(random.choice(choices))
+
+#Gera uma senha aleatória usando os dígitos da linha 38
+@bot.command()
+async def password(ctx, *pass_length: int):
+    elements = "+-/*!&$#?=@<>"
+    password = ""
+    if not pass_length:
+        await ctx.send("Você precisa colocar o número de caracteres que sua senha terá")
+        return
+    if pass_length:
+        pass_length = int(pass_length[0])
+        if pass_length >= 2:
+            for i in range(pass_length):
+                password += random.choice(elements)
+        else:
+            await ctx.send("A senha precisa ter mais de 2 caracteres")
+            return
+    await ctx.send(password)
+
+bot.run("Your Token")
