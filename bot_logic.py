@@ -34,7 +34,7 @@ async def meme(ctx):
 @bot.command(description="Escolhe uma das opções que foram dadas. Ex: $choose op1 op2 op3. Ex: 'op1 op' 'op2 op' 'op3 op'") 
 async def choose(ctx, *choices: str):
     """Escolhe entre múltiplas escolhas."""
-    if choices <= 2:
+    if len(choices) <= 2:
         await ctx.send("Você precisa passar pelo menos 2 opções. Para mais detalhes digite $help choose")
         return
     await ctx.send(random.choice(choices))
@@ -59,4 +59,5 @@ async def password(ctx, *pass_length: int):
     await ctx.send(password)
 
 bot.run("Your Token")
+
 
