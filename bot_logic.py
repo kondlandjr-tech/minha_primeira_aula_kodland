@@ -16,32 +16,14 @@ async def on_ready():
     channel = bot.get_channel(channel_id)
 
     if channel:
-        await channel.send("Digite <$help> para ver os comandos. E <$ajuda> para ver o que cada um faz")
+        await channel.send("Digite <$help> para ver os comandos")
 
 #Envia um dos memes que está na pasta "images" se o comando $meme for digitado NO SERVIDOR
 #Na linha 19 (Desse código) altera qual o nome do comando "async def !meme!(ctx)". Se ele (o nome do comando) for alterado
 #Exclua o terminal (deligue o bot) e inicie o bot (ligue o bot)
-@bot.command()
-async def ajuda(ctx, comando: str):
-    if comando == "meme":
-        await ctx.send("Para ativá-lo, digite: $meme. Ele escolhe um meme dentre 2 e o mostra")
-    
-    elif comando == "choose":
-        await ctx.send("Para ativá-lo, digite: $choose. Ele escolhe uma opção dada pelo usuário. Ex: $choose João Maria José. Obs: se fosse nomes separados. Ex: João Rafael. Poderia ser: João_Rafael ou João Rafael (entre aspas)")
-
-    elif comando == "password":
-        await ctx.send(" Para ativá-lo, digite $password <número de caracteres que deseja>. Ex: 5, 4, 3, 9, 10, 25, 2000... Ele criará uma senha aleatória de no mínimo 3 dígitos com os caracteres disponíveis")
-
-    elif comando == "help":
-        await ctx.send("Te mostrará todos os comandos que o código é capaz de fazer")
-
-    elif comando == "ajuda":
-        await ctx.send("Te mostrará todos os comandos disponíveis")
-
-    else:
-        await ctx.send("Esse comando não existe ou foi digitado errado. Tente novamente")
-@bot.command()
+@bot.command(description="Te mostra 1 de 2 memes sobre programação")
 async def meme(ctx):
+    """Mostra memes sobre programação."""
     image_name = random.choice(os.listdir('images'))
     with open (f'images/{image_name}', 'rb') as f:
         picture = discord.File(f)
@@ -49,17 +31,18 @@ async def meme(ctx):
 
 #Escolhe um nome se digitar $choose op1 op2 op3. Se for opções com espaços Ex: "op1 espaço1" "op2 espaço2 " "op3 espaço3"
 #Ou Ex: op1_espaço1 op2_espaço2 op3_espaço3
-@bot.command(description='For when you wanna settle the score some other way')
+@bot.command(description="Escolhe uma das opções que foram dadas. Ex: $choose op1 op2 op3. Ex: 'op1 op' 'op2 op' 'op3 op'") 
 async def choose(ctx, *choices: str):
-    """Chooses between multiple choices."""
-    if not choices:
-        await ctx.send("Você precisa passar pelo menos uma opção. Ex: op1 op2 op3. Ex: (aspas)op1 espaço1(aspas) (a)op2 espaço2(a)  (a)op3 espaço3(a)")
+    """Escolhe entre múltiplas escolhas."""
+    if choices <= 2:
+        await ctx.send("Você precisa passar pelo menos 2 opções. Para mais detalhes digite $help choose")
         return
     await ctx.send(random.choice(choices))
 
 #Gera uma senha aleatória usando os dígitos da linha 38
-@bot.command()
+@bot.command(description="Cria uma senha (escolhendo os caracteres disponíveis) com o número de dígitos que foi digitado (mas tendo que ser maior que 2)")
 async def password(ctx, *pass_length: int):
+    """Cria uma senha com no mínimo 3 dígitos."""
     elements = "+-/*!&$#?=@<>"
     password = ""
     if not pass_length:
@@ -76,3 +59,4 @@ async def password(ctx, *pass_length: int):
     await ctx.send(password)
 
 bot.run("Your Token")
+
