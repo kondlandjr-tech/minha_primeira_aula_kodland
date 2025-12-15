@@ -1,4 +1,4 @@
-import discord, random, os, requests
+import discord, random, os
 from discord.ext import commands
 
 intents = discord.Intents.default()
@@ -7,25 +7,39 @@ intents.message_content = True
 #Configura qual que vai ser o prefixo (!@#$%¨¨&*) que vai ser usado antes do comando "/meme", "$meme","@meme"
 bot = commands.Bot(command_prefix = "$", intents=intents)
 
-def get_wolf_image_url():    
-    url = 'https://random.dog/woof.json'
-    res = requests.get(url)
-    data = res.json()
-    return data['url']
-
-def get_fox_image_url():    
-    url = 'https://randomfox.ca/floof/'
-    res = requests.get(url)
-    data = res.json()
-    return data['url']
-
 #Diz se quando o bot está ligado (o discord precisa estar aberto)
 @bot.event
 async def on_ready():
-    print(f"O {bot.user} acabou de ser ligado")
+    print(f"O{bot.user}acabou de ser ligado(Digite algum comando pro comando ser executado. Ex: $meme)")
+
+    channel_id = 1447698629799186542 # ID do canal
+    channel = bot.get_channel(channel_id)
+
+    if channel:
+        await channel.send("Digite <$help> para ver os comandos. E <$ajuda> para ver o que cada um faz")
+
 #Envia um dos memes que está na pasta "images" se o comando $meme for digitado NO SERVIDOR
 #Na linha 19 (Desse código) altera qual o nome do comando "async def !meme!(ctx)". Se ele (o nome do comando) for alterado
 #Exclua o terminal (deligue o bot) e inicie o bot (ligue o bot)
+@bot.command()
+async def ajuda(ctx, comando: str):
+    if comando == "meme":
+        await ctx.send("Para ativá-lo, digite: $meme. Ele escolhe um meme dentre 2 e o mostra")
+    
+    elif comando == "choose":
+        await ctx.send("Para ativá-lo, digite: $choose. Ele escolhe uma opção dada pelo usuário. Ex: $choose João Maria José. Obs: se fosse nomes separados. Ex: João Rafael. Poderia ser: João_Rafael ou João Rafael (entre aspas)")
+
+    elif comando == "password":
+        await ctx.send(" Para ativá-lo, digite $password <número de caracteres que deseja>. Ex: 5, 4, 3, 9, 10, 25, 2000... Ele criará uma senha aleatória de no mínimo 3 dígitos com os caracteres disponíveis")
+
+    elif comando == "help":
+        await ctx.send("Te mostrará todos os comandos que o código é capaz de fazer")
+
+    elif comando == "ajuda":
+        await ctx.send("Te mostrará todos os comandos disponíveis")
+
+    else:
+        await ctx.send("Esse comando não existe ou foi digitado errado. Tente novamente")
 @bot.command()
 async def meme(ctx):
     image_name = random.choice(os.listdir('images'))
@@ -43,6 +57,7 @@ async def choose(ctx, *choices: str):
         return
     await ctx.send(random.choice(choices))
 
+#Gera uma senha aleatória usando os dígitos da linha 38
 @bot.command()
 async def password(ctx, *pass_length: int):
     elements = "+-/*!&$#?=@<>"
@@ -60,18 +75,4 @@ async def password(ctx, *pass_length: int):
             return
     await ctx.send(password)
 
-
-@bot.command('wolf')
-async def wolf(ctx):
-    '''Uma vez que chamamos o comando wolf, o programa chama a função get_wolf_image_url '''
-    image_url = get_wolf_image_url()
-    await ctx.send(image_url)
-
-@bot.command('fox')
-async def fox(ctx):
-    '''Uma vez que chamamos o comando fox, o programa chama a função get_fox_image_url '''
-    image_url = get_fox_image_url()
-    await ctx.send(image_url)
-
 bot.run("Your Token")
-
