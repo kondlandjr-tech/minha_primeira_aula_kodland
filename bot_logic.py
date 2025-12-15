@@ -1,4 +1,4 @@
-import discord, random, os
+import discord, random, os, requests
 from discord.ext import commands
 
 intents = discord.Intents.default()
@@ -7,11 +7,22 @@ intents.message_content = True
 #Configura qual que vai ser o prefixo (!@#$%¨¨&*) que vai ser usado antes do comando "/meme", "$meme","@meme"
 bot = commands.Bot(command_prefix = "$", intents=intents)
 
+def get_wolf_image_url():    
+    url = 'https://random.dog/woof.json'
+    res = requests.get(url)
+    data = res.json()
+    return data['url']
+
+def get_fox_image_url():    
+    url = 'https://randomfox.ca/floof/'
+    res = requests.get(url)
+    data = res.json()
+    return data['url']
+
 #Diz se quando o bot está ligado (o discord precisa estar aberto)
 @bot.event
 async def on_ready():
-    print(f"O{bot.user}acabou de ser ligado(Digite algum comando pro comando ser executado. Ex: $meme)")
-
+    print(f"O {bot.user} acabou de ser ligado")
 #Envia um dos memes que está na pasta "images" se o comando $meme for digitado NO SERVIDOR
 #Na linha 19 (Desse código) altera qual o nome do comando "async def !meme!(ctx)". Se ele (o nome do comando) for alterado
 #Exclua o terminal (deligue o bot) e inicie o bot (ligue o bot)
@@ -32,7 +43,6 @@ async def choose(ctx, *choices: str):
         return
     await ctx.send(random.choice(choices))
 
-#Gera uma senha aleatória usando os dígitos da linha 38
 @bot.command()
 async def password(ctx, *pass_length: int):
     elements = "+-/*!&$#?=@<>"
@@ -50,4 +60,18 @@ async def password(ctx, *pass_length: int):
             return
     await ctx.send(password)
 
+
+@bot.command('wolf')
+async def wolf(ctx):
+    '''Uma vez que chamamos o comando wolf, o programa chama a função get_wolf_image_url '''
+    image_url = get_wolf_image_url()
+    await ctx.send(image_url)
+
+@bot.command('fox')
+async def fox(ctx):
+    '''Uma vez que chamamos o comando fox, o programa chama a função get_fox_image_url '''
+    image_url = get_fox_image_url()
+    await ctx.send(image_url)
+
 bot.run("Your Token")
+
